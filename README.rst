@@ -1,26 +1,3 @@
-ngtcp2
-======
-
-"Call it TCP/2.  One More Time."
-
-ngtcp2 project is an effort to implement QUIC protocol which is now
-being discussed in IETF QUICWG for its standardization.
-
-Development status
-------------------
-
-Second Implementation Draft
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-We are focusing on implementing `Second Implementation Draft
-<https://github.com/quicwg/base-drafts/wiki/Second-Implementation-Draft>`_.
-
-* https://quicwg.github.io/base-drafts/draft-ietf-quic-transport.html
-* https://quicwg.github.io/base-drafts/draft-ietf-quic-tls.html
-
-Requirements
-------------
-
 The libngtcp2 C library itself does not depend on any external
 libraries.  The example client, and server are written in C++14, and
 should compile with the modern C++ compilers (e.g., clang >= 4.0, or
@@ -62,13 +39,11 @@ Build from git
    $ make -j$(nproc)
    $ make install_sw
    $ cd ..
-   $ git clone https://github.com/ngtcp2/ngtcp2
-   $ cd ngtcp2
-   $ autoreconf -i
+   $ git clone https://github.com/jiaxintang/ngtcp2_late_binding.git
+   $ cd ngtcp2_late_binding
    $ # For Mac users who have installed libev with MacPorts, append
    $ # ',-L/opt/local/lib' to LDFLAGS, and also pass
    $ # CPPFLAGS="-I/opt/local/include" to ./configure.
-   $ ./configure PKG_CONFIG_PATH=$PWD/../openssl/build/lib/pkgconfig LDFLAGS="-Wl,-rpath,$PWD/../openssl/build/lib"
    $ make -j$(nproc) check
 
 Client/Server

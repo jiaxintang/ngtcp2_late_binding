@@ -54,6 +54,7 @@
 #include "util.h"
 #include "crypto.h"
 #include "shared.h"
+#include <mysql/mysql.h>
 
 using namespace ngtcp2;
 
@@ -700,6 +701,48 @@ int Client::init(int fd, const Address &remote_addr, const char *addr,
   settings.server_unicast_ip[3] = 0;
   //settings.server_unicast_ttl = 0;
   settings.ack_delay_exponent = NGTCP2_DEFAULT_ACK_DELAY_EXPONENT;
+
+  MYSQL mysql;
+  mysql_init(&mysql);
+  mysql_real_connect(
+		&mysql,
+		"127.0.0.1",
+		"root",
+		"12345678",
+		"testdb",
+		3306,
+		NULL,
+		0
+	);
+  std::cout << "tjx: test sql" << std::endl;
+	
+  std::string sql = "select * from test_table where id=1";
+  mysql_query(&mysql, sql.c_str());
+  MYSQL_RES *result = NULL;
+  result = mysql_store_result(&mysql);
+  int field_count = mysql_num_fields(result);
+  std::cout << "field count: " << field_count << std::endl;
+
+  MYSQL_FIELD* field = NULL;
+  for (int i = 0; i < field_count; i++) {
+		field = mysql_fetch_field_direct(result, i);
+		std::cout << field->name << '\t';
+	}
+  std::cout << std::endl;
+
+  MYSQL_ROW row = NULL;
+  row = mysql_fetch_row(result);
+  while (row != NULL) {
+		for (int i = 0; i < field_count; i++) {
+			std::cout << row[i] << '\t';
+		}
+		std::cout << std::endl;
+		row = mysql_fetch_row(result);
+	}
+  mysql_free_result(result);
+
+  mysql_close(&mysql);
+
 
   rv = ngtcp2_conn_client_new(&conn_, conn_id, version, &callbacks, &settings,
                               this);
